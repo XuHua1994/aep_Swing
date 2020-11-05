@@ -3,9 +3,9 @@ package config;
 public class Test {
     public static void main(String[] args) {
 
-        String aa = SysConfig.getProperty("aep.appkey");
+        Integer x=Integer.valueOf("1137");
 
-        System.out.println(aa);
+        System.out.println(x);
 
     }
 }

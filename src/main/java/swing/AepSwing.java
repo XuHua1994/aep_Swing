@@ -139,7 +139,7 @@ public class AepSwing extends JFrame implements ActionListener {
 
 //面板参数设计
         this.add(jp);
-        this.setTitle("AEP井盖指令下发平台");
+        this.setTitle("AEP指令下发平台");
         this.setBounds(550, 250, 650, 500);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -296,9 +296,12 @@ public class AepSwing extends JFrame implements ActionListener {
                     "  \"level\": " + level + "\n" +
                     "}";
             try {
+                PromptUtil.outputError("指令正在下发,请稍候!");
                 ResultBean resultBean=ApiExample.lwm2mExample1(secret, appKey, MasterKey, bodyString);
-                if (resultBean.getCode()==200){
+                if (resultBean.getCode()==0){
                     PromptUtil.outputError("指令下发成功!");
+//                    String mes="code:"+resultBean.getCode()+";message:"+resultBean.getMessage();
+////                    PromptUtil.outputError(mes);
                     return;
                 }else {
                     PromptUtil.outputError("指令下发失败!");

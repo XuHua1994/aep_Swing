@@ -15,6 +15,9 @@ public class JsonUtil {
     public static List<Instruction> getInstruction() {
         List<Instruction> list = new ArrayList<>();
         List<String> joStrList = new ArrayList<>();
+        //井盖指令
+        joStrList.add("{\"serviceName\":\"获取所有参数\",\"serviceFlag\":\"get_all_para\",\"name\":\"get_all_para\",\"min\":\"null\",\"max\":\"null\",\"len\":1,\"unit\":\"null\"}");
+        joStrList.add("{\"serviceName\":\"获取NB模组信息\",\"serviceFlag\":\"get_nb_module_imformation\",\"name\":\"get_all_para\",\"min\":\"null\",\"max\":\"null\",\"len\":1,\"unit\":\"null\"}");
         joStrList.add("{\"serviceName\":\"满溢检测冷却时间\",\"serviceFlag\":\"set_CD_timer\",\"name\":\"CD_timer\",\"min\":\"0\",\"max\":\"32767\",\"len\":2,\"unit\":\"min\"}");
         joStrList.add("{\"serviceName\":\"气体采样周期\",\"serviceFlag\":\"set_gas_sampling_period\",\"name\":\"gas_sampling_period\",\"min\":\"0\",\"max\":\"32767\",\"len\":2,\"unit\":\"min\"}");
         joStrList.add("{\"serviceName\":\"心跳周期\",\"serviceFlag\":\"set_heart_period\",\"name\":\"heart_period\",\"min\":\"1\",\"max\":\"32767\",\"len\":2,\"unit\":\"min\"}");
@@ -25,6 +28,10 @@ public class JsonUtil {
         joStrList.add("{\"serviceName\":\"满溢检测灵敏度\",\"serviceFlag\":\"set_overflow_sensitivity\",\"name\":\"overflow_sensitivity\",\"min\":\"0\",\"max\":\"255\",\"len\":1,\"unit\":\"null\"}");
         joStrList.add("{\"serviceName\":\"安全角度阈值\",\"serviceFlag\":\"set_safe_angle_threshold\",\"name\":\"safe_angle_threshold\",\"min\":\"0\",\"max\":\"180\",\"len\":1,\"unit\":\"°\"}");
         joStrList.add("{\"serviceName\":\"系统复位\",\"serviceFlag\":\"set_systerm_reset\",\"name\":\"systerm_reset\",\"len\":1,\"enumDetail\":{\"0\":\"系统复位OK\",\"1\":\"系统重启\",\"2\":\"恢复出厂默认参数\"}}");
+
+        //新增地磁初始化指令
+        joStrList.add("{\"serviceName\":\"下发设备控制指令\",\"serviceFlag\":\"device_control\",\"name\":\"command_type\",\"len\":1,\"enumDetail\":{\"0\":\"重置无车\",\"1\":\"重置标尺\",\"2\":\"关机\",\"3\":\"强制重启\"}}");
+
         instructionMap = new HashMap<>();
         for (String joStr : joStrList) {
             list.add(getParsing(joStr));
@@ -66,10 +73,19 @@ public class JsonUtil {
                 unit = "";
             }
             instruction.setUnit(unit);
-            instruction.setMax(Integer.valueOf(jsonObject.getString("max")));
-            instruction.setMin(Integer.valueOf(jsonObject.getString("min")));
 
-            instruction.setAnnotation(instruction.getName() + "(" + instruction.getMin() + "~" + instruction.getMax() + ")" + instruction.getUnit());
+            String max=jsonObject.getString("max");
+
+            if (max == null || "null".equals(max)) {
+                instruction.setMax(null);
+                instruction.setMin(null);
+                instruction.setAnnotation(instruction.getName());
+            }else {
+                instruction.setMax(Integer.valueOf(jsonObject.getString("max")));
+                instruction.setMin(Integer.valueOf(jsonObject.getString("min")));
+
+                instruction.setAnnotation(instruction.getName() + "(" + instruction.getMin() + "~" + instruction.getMax() + ")" + instruction.getUnit());
+            }
         }
 //        System.out.println(instruction);
         instructionMap.put(instruction.getSerSign(), instruction);
